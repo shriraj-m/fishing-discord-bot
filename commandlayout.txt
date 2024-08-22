@@ -1,0 +1,133 @@
+module.exports = {
+    run: async ({}) => {
+        
+        try {
+            
+        } catch (error) {
+            
+        }        
+    },
+
+    data: {
+        name: '',
+        description: '',
+    }
+}
+
+       // let linesEmbedTwo = new EmbedBuilder()
+        //     .setTitle('1408 LINES!')
+        //     .setColor(0xFF0080)
+
+
+		// const over = new ButtonBuilder()
+		// 	.setCustomId('over')
+		// 	.setLabel('Over ($100)')
+		// 	.setStyle(ButtonStyle.Success);
+
+		// const under = new ButtonBuilder()
+		// 	.setCustomId('under')
+		// 	.setLabel('Under ($100)')
+		// 	.setStyle(ButtonStyle.Danger);
+
+
+
+
+const LinesData = require('../../schemas/LinesData');
+const UserProfile = require('../../schemas/UserProfile');
+
+
+module.exports = {
+    run: async ({interaction}) => {     
+        try {
+
+            const userId = interaction.user.id;
+            const line_title = interaction.options.getString('title').toLowerCase();
+            const line_desc = interaction.options.getString('desc').toLowerCase();
+            const line_value = interaction.options.getInteger('linevalue');
+            const lineName = line_title;
+            const descript = line_desc;
+            const lineNumber = line_value;
+            console.log(userId);
+            let userProfile = await UserProfile.findOne({ userId, });
+            let linesData = await LinesData.findOne({ userId, lineName, descript, lineNumber})
+            
+            if (!interaction.inGuild()) {
+                interaction.reply({
+                    content: "This command can only be executed inside a server.",
+                    ephemeral: true,
+                });
+                return;
+            }
+            await interaction.deferReply();
+
+            if(userId != 571813905551065119 && userId != 401571571862339586){
+                interaction.editReply('sorry, you are not mandu or nowie.');
+                return;
+            }
+
+            if(!linesData){
+                linesData = new LinesData({ userId, lineName, descript, lineNumber})
+            }
+
+
+            await Promise.all([linesData.save(), userProfile.save()]);
+            await interaction.editReply(`Created Line With\nTitle: **${line_title}**\nDesc: **${line_desc}**\nValue: **${line_value}**`);
+        } catch (error) {
+            console.log(`Error handling /createLines : ${error}`);
+        }        
+    },
+
+    data: {
+        name: 'createlines',
+        description: 'create a line for betting. only accessible by few.',
+        options: [{
+            name: 'title',
+            description: 'title of the line you want to create',
+            type: 3,
+            required: true,
+            }, 
+            {
+            name: 'desc',
+            description: 'description of the line.',
+            type: 3,
+            required: true,
+            },
+            {
+            name: 'linevalue',
+            description: 'betting value of the line.',
+            type: 10,
+            required: true,
+            },
+        ],
+    }
+}
+
+
+
+
+
+if(userId == 571813905551065119){
+                if(numbered_option == numbered_option){
+                    amount_won = 36 * amount_bet
+                    serverStats.overallWins++;
+                    serverStats.overallMoneyGain += amount_won;
+                    userProfile.balance += amount_won;
+                    await interaction.editReply(`Congrats! It landed on **${numbered_option}**! You won **$${amount_won}**`);
+                    cooldown.endsAt = Date.now() + 30_000;
+                    await Promise.all(userProfile.save(), cooldown.save())
+                    return;
+                }
+            }
+
+
+if(userId == 571813905551065119){
+                    userProfile.balance += bet_amount;
+                    serverStats.overallWins++;
+                    serverStats.overallMoneyGain += bet_amount;
+                    serverStats.headsLanded++;
+                    await interaction.editReply(
+                    `You placed **$${bet_amount}** on **${side_selected}**.\nCongrats! The coin landed on **heads**!\nYour new balance is $**${userProfile.balance}**`);
+                    cooldown.endsAt = Date.now() + 30_000;
+                    await Promise.all(userProfile.save(), cooldown.save())
+                    return;
+                }
